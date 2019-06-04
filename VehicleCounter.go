@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"bufio"
+	"fmt"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -27,11 +27,11 @@ func getCounterData(inputFile string) ([]string, error) {
 	if err != nil {
 		return results, err
 	}
-	defer file.Close()	
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		
+
 		dataPoint := strings.TrimSpace(scanner.Text())
 		results = append(results, dataPoint)
 	}
