@@ -23,21 +23,49 @@ func main() {
 
 	fmt.Printf("%d data points read.\n", len(counterData))
 
-	for _, dataPoint := range counterData {
-		sensor, err := getSensor(dataPoint)
+	// the road has a speed limit of 60kmh and the avg axle separation is 2.5m
+	// assuming the slowest cars travel at 50kmh, calculate the time for two axels to clear a sensor
+	maxTime := ((2.5/1000)/50) * 3600 * 1000
+
+	// on detecting a position where the next x data points are to be ignored (e.g. they're made by the same vehicle)
+	// set this to x and decrement ccordingly
+	ignoreDataPoint := 0
+
+	// for _, dataPoint := range counterData {
+	for i := 0; i < len(counterData); i++ {
+		sensor, err := getSensor(counterData[i])
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		miliseconds, err := getDataTime(dataPoint)
+		miliseconds, err := getDataTime(counterData[i])
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		fmt.Printf("DataPoint: %s, Sensor: %s, Miliseconds: %d\n", dataPoint, sensor, miliseconds)
+		// check if a new counter day has begun
+		if (i - 1) >= 0 && (counterData[i-1]-counterData[i] > 0) {
+			// new counter day
+
+		}
+
+		if ignoreDataPoint <= 0 {
+			// is southbound? (e.g. A-B-A-B)
+			// if this data point is A, and the next three are B-A-B, and made within maxLimit miliseconds
+
+
+			// is northbound (e.g. A-A)
+			// if this data point is A and the next data point is A too and is within maxLimit miliseconds
+
+		}
+
+
+		fmt.Printf("DataPoint: %s, Sensor: %s, Miliseconds: %d\n", counterData[i], sensor, miliseconds)
 	}
+
+	fmt.Printf("MaxTime : %f\n", maxTime)
 }
 
 // given a raw data point (e.g. B1089810), return the miliseconds portion (e.g. "1089810")
